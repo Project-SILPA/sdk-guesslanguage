@@ -25,4 +25,11 @@ public class LanguageInfo {
     public String getLanguageName() {
         return this.langName;
     }
+
+    @Override
+    public String toString() {
+        return "Language Tag : " + this.langTag + "\n" +
+                "Language Id : " + this.langId + "\n" +
+                "Language Name : " + this.langName;
+    }
 }
