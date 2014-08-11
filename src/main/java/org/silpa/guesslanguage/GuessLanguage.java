@@ -1,6 +1,7 @@
 package org.silpa.guesslanguage;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -293,36 +294,7 @@ public class GuessLanguage {
     }
 
     private void loadModels() {
-        models = new HashMap<>();
-        Pattern pat = Pattern.compile("(.{3})\\s+(.*)");
-
-        Field[] fields = R.raw.class.getFields();
-        for (int count = 0; count < fields.length; count++) {
-            String dictName = fields[count].getName();
-            if (dictName.startsWith("silpa_sdk_guess_language_dic_")) {
-                Map<String, Integer> model = new HashMap<>();
-                try {
-                    BufferedReader br = new BufferedReader(new InputStreamReader
-                            (this.mContext.getResources().openRawResource(
-                                    this.mContext.getResources().getIdentifier(dictName,
-                                            "raw", mContext.getPackageName())
-                            )));
-
-                    String str = br.readLine();
-                    while (str != null) {
-                        Matcher mat = pat.matcher(str);
-                        if (mat.find()) {
-                            model.put(mat.group(1), Integer.parseInt(mat.group(2)));
-                        }
-                        str = br.readLine();
-                    }
-                    models.put(dictName.replace("silpa_sdk_guess_language_dic_", "").toLowerCase(Locale.getDefault()), model);
-                    br.close();
-                } catch (IOException ioe) {
-                    Log.e(LOG_TAG, "Error : " + ioe.getMessage());
-                }
-            }
-        }
+        new LoadModels().execute();
     }
 
     private List<String> findRuns(String text) {
@@ -502,6 +474,8 @@ public class GuessLanguage {
                 dist += MAXGRAMS;
             }
             //}
+
+
         }
         return dist;
     }
@@ -525,5 +499,42 @@ public class GuessLanguage {
         u = nonAlphaRe.matcher(u).replaceAll(" ");
         u = spaceRe.matcher(u).replaceAll(" ");
         return u;
+    }
+
+    private class LoadModels extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            models = new HashMap<>();
+            Pattern pat = Pattern.compile("(.{3})\\s+(.*)");
+
+            Field[] fields = R.raw.class.getFields();
+            for (int count = 0; count < fields.length; count++) {
+                String dictName = fields[count].getName();
+                if (dictName.startsWith("silpa_sdk_guess_language_dic_")) {
+                    Map<String, Integer> model = new HashMap<>();
+                    try {
+                        BufferedReader br = new BufferedReader(new InputStreamReader
+                                (mContext.getResources().openRawResource(
+                                        mContext.getResources().getIdentifier(dictName,
+                                                "raw", mContext.getPackageName())
+                                )));
+
+                        String str = br.readLine();
+                        while (str != null) {
+                            Matcher mat = pat.matcher(str);
+                            if (mat.find()) {
+                                model.put(mat.group(1), Integer.parseInt(mat.group(2)));
+                            }
+                            str = br.readLine();
+                        }
+                        models.put(dictName.replace("silpa_sdk_guess_language_dic_", "").toLowerCase(Locale.getDefault()), model);
+                        br.close();
+                    } catch (IOException ioe) {
+                        Log.e(LOG_TAG, "Error : " + ioe.getMessage());
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
