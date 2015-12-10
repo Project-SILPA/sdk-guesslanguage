@@ -3,8 +3,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import org.silpa.guesslanguage.GuessLanguage;
-import org.silpa.guesslanguage.LanguageInfo;
+import org.libindic.guesslanguage.GuessLanguage;
+import org.libindic.guesslanguage.LanguageInfo;
 
 import java.util.HashMap;
 import java.util.Map;

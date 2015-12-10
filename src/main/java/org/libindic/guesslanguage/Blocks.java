@@ -1,4 +1,4 @@
-package org.silpa.guesslanguage;
+package org.libindic.guesslanguage;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package org.silpa.guesslanguage;
+package org.libindic.guesslanguage;
 
 /**
  * Created by sujith on 30/7/14.
